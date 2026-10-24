@@ -104,7 +104,7 @@ function renderPlaceholder() {
   const box = h('div', 'placeholder');
   box.append(
     h('p', 'placeholder__title', 'No Pokémon selected'),
-    h('p', null, 'Search above to see its profile here.')
+    h('p', null, 'Search for a Pokémon to see its profile here.')
   );
   return box;
 }

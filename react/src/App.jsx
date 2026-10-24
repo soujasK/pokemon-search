@@ -105,7 +105,7 @@ export default function App() {
         {status === 'idle' && (
           <div className="placeholder">
             <p className="placeholder__title">No Pokémon selected</p>
-            <p>Search above to see its profile here.</p>
+            <p>Search for a Pokémon to see its profile here.</p>
           </div>
         )}
         {status === 'loading' && <Loader query={searchedFor} />}
