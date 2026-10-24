@@ -331,13 +331,21 @@ if (modeTrigger && modeWrapper) {
     modeTrigger.setAttribute('aria-expanded', String(shouldOpen));
   }
 
+  // Ports used when both apps run locally (React dev server and vanilla static server)
+  const DEV_PORTS = ['5173', '8080'];
+
   function updateTargetUrls() {
     modeItems.forEach((link) => {
       const target = link.dataset.switchTo;
       try {
-        const targetPort = target === 'react' ? '5173' : '8080';
         const targetUrl = new URL(window.location.href);
-        targetUrl.port = targetPort;
+        if (DEV_PORTS.includes(targetUrl.port)) {
+          // Local development: each app runs on its own port
+          targetUrl.port = target === 'react' ? '5173' : '8080';
+        } else {
+          // Deployed: both apps live on one site under /react/ and /vanilla/
+          targetUrl.pathname = `/${target}/`;
+        }
         const currentQuery = input.value.trim();
         if (currentQuery) {
           targetUrl.searchParams.set('q', currentQuery);

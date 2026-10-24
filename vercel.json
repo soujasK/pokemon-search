@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd react && npm ci",
+  "buildCommand": "cd react && npm run build && cd .. && rm -rf dist && mkdir dist && cp -r vanilla dist/vanilla && cp -r react/dist dist/react",
+  "outputDirectory": "dist",
+  "trailingSlash": true,
+  "redirects": [{ "source": "/", "destination": "/react/", "permanent": false }]
+}

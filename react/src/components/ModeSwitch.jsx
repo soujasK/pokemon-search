@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
+// Ports used when both apps run locally (React dev server and vanilla static server)
+const DEV_PORTS = ['5173', '8080'];
+
 export default function ModeSwitch({ currentMode = 'react', currentQuery = '' }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
@@ -30,9 +33,14 @@ export default function ModeSwitch({ currentMode = 'react', currentQuery = '' })
 
   function getTargetUrl(targetMode) {
     try {
-      const targetPort = targetMode === 'vanilla' ? '8080' : '5173';
       const targetUrl = new URL(window.location.href);
-      targetUrl.port = targetPort;
+      if (DEV_PORTS.includes(targetUrl.port)) {
+        // Local development: each app runs on its own port
+        targetUrl.port = targetMode === 'vanilla' ? '8080' : '5173';
+      } else {
+        // Deployed: both apps live on one site under /react/ and /vanilla/
+        targetUrl.pathname = `/${targetMode}/`;
+      }
       if (currentQuery && currentQuery.trim()) {
         targetUrl.searchParams.set('q', currentQuery.trim());
       } else {
