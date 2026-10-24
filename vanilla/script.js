@@ -174,11 +174,11 @@ function renderStats(stats) {
   const list = h('ul', 'stats');
   stats.forEach((stat) => {
     const item = h('li', 'stat');
-    const bar = h('span', 'stat__bar');
-    bar.setAttribute('aria-hidden', 'true');
-    const fill = h('span', 'stat__fill');
-    fill.style.width = `${Math.min(stat.value / MAX_STAT_VALUE, 1) * 100}%`;
+    const bar = h('div', 'stat__bar');
+    const fill = h('div', 'stat__fill');
+    fill.style.width = `${Math.min(100, (stat.value / MAX_STAT_VALUE) * 100)}%`;
     bar.append(fill);
+
     item.append(
       h('span', 'stat__label', stat.label),
       h('span', 'stat__value', String(stat.value)),
@@ -268,7 +268,7 @@ async function search(rawQuery) {
   clearValidation();
 
   // Cancel any previous request so a slow response can't overwrite a newer one
-  activeRequest?.abort();
+  if (activeRequest) activeRequest.abort();
   const controller = new AbortController();
   activeRequest = controller;
 
@@ -306,8 +306,9 @@ examples.addEventListener('click', (event) => {
   search(chip.dataset.query);
 });
 
-// Initial view: run a shared ?q= search, otherwise show the placeholder
-const initialQuery = new URLSearchParams(window.location.search).get('q');
+// Initial view or URL query search
+const urlParams = new URLSearchParams(window.location.search);
+const initialQuery = urlParams.get('q');
 if (initialQuery && initialQuery.trim()) {
   input.value = initialQuery.trim();
   search(initialQuery.trim());
@@ -366,7 +367,9 @@ if (modeTrigger && modeWrapper) {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') toggleDropdown(false);
+    if (e.key === 'Escape') {
+      toggleDropdown(false);
+    }
   });
 
   modeItems.forEach((link) => {
